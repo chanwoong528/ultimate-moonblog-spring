@@ -1,7 +1,5 @@
 package com.example.moonblogserver.category;
 
-
-import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.UUID;
 

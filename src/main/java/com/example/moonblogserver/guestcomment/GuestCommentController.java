@@ -1,12 +1,12 @@
-package com.example.moonblogserver.post;
+package com.example.moonblogserver.guestcomment;
+
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/post")
-public class PostController {
-
+@RequestMapping("/api/guest-comment")
+public class GuestCommentController {
 
 
 }
