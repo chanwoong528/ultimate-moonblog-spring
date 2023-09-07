@@ -11,27 +11,37 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
 
-    public User createdOneUser(User userInfo) {
-        User existUser = userRepository.findByEmailAndLoginType(userInfo.getEmail(), userInfo.getLoginType()).orElse(null);
-        if (existUser == null) {
-            System.out.println("@@@@@@ pw: " + userInfo.getPw());
-            if (userInfo.getPw() == null || userInfo.getPw().equals("")) {
-                userInfo.setPw("snsloginpw");
-            } else {
-                String hashedPassword = new BCryptPasswordEncoder(10).encode(userInfo.getPw());
-                userInfo.setPw(hashedPassword);
-            }
-            return userRepository.save(userInfo);
-        }
-        return existUser;
+  public User createdOneUser(User userInfo) {
+    User existUser = userRepository.findByEmailAndLoginType(userInfo.getEmail(), userInfo.getLoginType()).orElse(null);
+    if (existUser == null) {
+
+      if (userInfo.getPw() == null || userInfo.getPw().equals("")) {
+        userInfo.setPw("snsloginpw");
+      } else {
+        String hashedPassword = new BCryptPasswordEncoder(10).encode(userInfo.getPw());
+        userInfo.setPw(hashedPassword);
+      }
+      return userRepository.save(userInfo);
     }
+    return existUser;
+  }
 
-    public Optional<User> findOneUser(String email, String loginType) {
+  public User patchOneUser(User patchUserInfo) {
+    User existUser = userRepository.findByEmailAndLoginType(patchUserInfo.getEmail(), patchUserInfo.getLoginType()).orElseThrow(() -> new ResourceNotFoundException("patchUserInfo not exist with id :" + patchUserInfo.getEmail() + patchUserInfo.getLoginType()));
 
-        return userRepository.findByEmailAndLoginType(email, loginType);
-    }
+    existUser.setMarketingConsent(patchUserInfo.getMarketingConsent());
+    existUser.setPrivacyConsent(patchUserInfo.getPrivacyConsent());
+    existUser.setVerified('Y');
+
+    return userRepository.save(existUser);
+  }
+
+  public Optional<User> findOneUser(String email, String loginType) {
+
+    return userRepository.findByEmailAndLoginType(email, loginType);
+  }
 
 }
