@@ -51,8 +51,9 @@ public class UserController {
     return new ResponseEntity<UserResponse>(userResponse, HttpStatus.CREATED);
   }
 
-  @RequestMapping(value = "/", method = RequestMethod.PATCH)
-  public ResponseEntity<UserResponse> validateUser(@RequestBody User userPatchInfo, HttpServletResponse response) {
+  @RequestMapping(value = "", method = RequestMethod.PATCH)
+  public ResponseEntity<UserResponse> validateUser(@RequestBody User userPatchInfo) {
+    System.out.println("user " + userPatchInfo);
 
     User createdUser = userService.patchOneUser(userPatchInfo);
     UserResponse userResponse = new UserResponse();
@@ -62,16 +63,14 @@ public class UserController {
   }
 
 
-
   @RequestMapping(value = "/token", method = RequestMethod.POST)
-  public ResponseEntity<String> postAccessToken(@RequestParam("accessToken") String accessToken) {
+  public ResponseEntity<String> postAccessToken(@RequestHeader Map<String, String> headers, @RequestParam("accessToken") String accessToken) {
     jwtManager = new JwtManager();
-    try {
+        try {
       String emailFromToken = jwtManager.getEmailFromToken(accessToken);
       return new ResponseEntity<String>(emailFromToken, HttpStatus.OK);
     } catch (ExpiredJwtException e1) {
-
-      return new ResponseEntity<String>("emailFromToken", HttpStatus.NOT_ACCEPTABLE);
+      return new ResponseEntity<String>("emailFromToken", HttpStatus.EXPECTATION_FAILED);
     }
 
 
